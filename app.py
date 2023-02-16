@@ -1,24 +1,28 @@
 from PyPDF2 import PdfReader
-
-reader = PdfReader("reva.pdf")
-page = reader.pages[2]
-
 import re
 
-text = page.extract_text()
+#seleciono o arquivo
+reader = PdfReader("reva.pdf")
+#seleciono a pagina
+page = reader.pages[2]
 
+#extraio todo texto do pdf para tratar ele separadamente
+text = page.extract_text()
+#extraio as questões (por enquanto, uma unica especifica)
 pattern = re.compile(r"QUESTÃO 3([\s\S]*)QUESTÃO 4")
 matches = pattern.findall(text).__str__()
 
+#set array que vai armazenar as informações 
 questao = {'Questao':[], 'A': [], 'B':[], 'C':[], 'D':[], 'E':[], 'Resposta':[]}
 
-# Questão
+# get Questão e sanitize
+
 pattern = re.compile(r"a.*\\nA ")
 enunciado = pattern.findall(matches)[0]
-
+enunciado = enunciado.replace("\\n","")
 questao['Questao'].append(enunciado)
  
-# Alternativas
+# get Alternativas
 
 contagem = {
     '\\\\nA' : '\\\\nB',
@@ -29,7 +33,6 @@ contagem = {
 }
 
 padrao = re.compile(r'(A|B|C|D|E)')
-
 for i,v in contagem.items():
     patternA = re.compile(r"{} ([\s\S]*).{}".format(i,v))
     rA = patternA.findall(matches)[0];
