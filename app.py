@@ -9,7 +9,7 @@ page = reader.pages[2]
 #extraio todo texto do pdf para tratar ele separadamente
 text = page.extract_text()
 #extraio as questões (por enquanto, uma unica especifica)
-pattern = re.compile(r"QUESTÃO 3([\s\S]*)QUESTÃO 4")
+pattern = re.compile(r"QUESTÃO 1([\s\S]*)QUESTÃO 2")
 matches = pattern.findall(text).__str__()
 
 #set array que vai armazenar as informações 
@@ -35,7 +35,8 @@ contagem = {
 padrao = re.compile(r'(A|B|C|D|E)')
 for i,v in contagem.items():
     patternA = re.compile(r"{} ([\s\S]*).{}".format(i,v))
-    rA = patternA.findall(matches)[0];
+    rA = patternA.findall(matches)[0]
+    rA = rA.replace("\\n","")
     questao[f'{padrao.findall(i)[0]}'].append(rA)
 
 print(questao)
